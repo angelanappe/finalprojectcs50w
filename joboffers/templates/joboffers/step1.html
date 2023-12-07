@@ -1,0 +1,37 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+
+<div class="my-3 mx-5" style="align-items: center;">
+    <p>Your are applying to the following Job:</p>
+    <div style="border-top: 2px dotted #ccc"></div><br>
+    <h4>{{ job.title }}</h4>
+    <i><p><strong>Company:</strong> {{ job.company_name }}</p>
+    <p><strong>Description:</strong> {{ job.job_description }}</p>
+    <p><strong>Location:</strong> {{ job.location }}</p></i>
+    <br>
+    <p>You are applying with the following information:</p>
+    <div style="border-top: 2px dotted #ccc"></div><br>
+    <p><strong>Profession:</strong> {{ user_profile.title }}</p>
+    <p><strong>Experience:</strong> {{ user_profile.experience }}</p>
+    <p><strong>Abilities:</strong> {{ user_profile.habilities }}</p>
+    <p><strong>Resume:</strong>
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+        {% if user_profile.resume %}
+            <a href="{{ user_profile.resume.url }}" target="_blank">{{ user_profile.resume.name }}</a></p> 
+        {% else %}
+            <a href="{% url 'edit_profile' %}">Add resume</a>
+            <p><i>Only .pdf is accepted.</i></p>
+        {% endif %}
+    </form>
+        <hr>
+        <a href="{% url 'edit_profile' %}">Edit</a>
+        <hr>
+    <form action="{% url 'step2' job.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-secondary">Next</button>
+    </form> 
+</div>
+
+{% endblock %}

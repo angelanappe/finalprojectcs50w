@@ -1,0 +1,44 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+<div class="my-3 mx-5" style="align-items: center;">
+    <h1>Edit Profile</h1>
+    <div style="border-top: 2px dotted #ccc"></div><br>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <strong>{{ form.title.label_tag }}</strong>
+        </div>
+        {{ form.title }}
+        <hr>
+        <div class="form-group">
+            <strong>Years of experience:</strong>
+        </div>
+        {{ form.years }}
+        <hr>
+        <div class="form-group">
+            <strong>{{ form.experience.label_tag }}</strong>
+        </div>
+            <textarea name="{{ form.experience.name }}" cols="100" rows="3">{{ form.experience.value }}</textarea>
+            <hr>
+        <div class="form-group">
+            <strong>{{ form.habilities.label_tag }}</strong>
+        </div>
+            <textarea name="{{ form.habilities.name }}" cols="100" rows="3">{{ form.habilities.value }}</textarea>
+            <hr>
+        <div class="form-group">
+            <strong>{{ form.resume.label_tag }}</strong>
+        </div>
+            {{ form.resume }}
+            <p><i>Only .pdf is accepted.</i></p>
+        <hr>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+
+    <hr>
+    <a href="{% url 'profile' %}">Back to My Profile</a>
+</div>
+<hr>
+<a class="my-3 mx-5" href="{% url 'index' %}">Back to Portal</a>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+    <div class="my-3 mx-5" style="align-items: center;">
+        <h1  style="color: darkblue;">Post a Job</h1>
+        <div style="border-top: 2px dotted #ccc"></div><br>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group" style="color: darkblue; border: rounded;">
+                <strong>{{ form.title.label_tag }}</strong>
+                <div>{{ form.title }}</div>
+            </div>
+            <hr>
+            <div class="form-group" style="color: darkblue;">
+                <strong>{{ form.company_name.label_tag }}</strong>
+                <div>{{ form.company_name }}</div>
+            </div>
+            <hr>
+            <div class="form-group" style="color: darkblue;">
+                <strong>{{ form.company_data.label_tag }}</strong>
+                <div>{{ form.company_data }}</div>   
+            </div>
+            <hr>
+            <div class="form-group rounded" style="color: darkblue;">
+                <strong>{{ form.job_description.label_tag }}</strong>
+                <div>{{ form.job_description }}</div>
+            </div>  
+            <hr>
+            <div class="form-group" style="color: darkblue;">
+                <strong>{{ form.category.label_tag }}</strong>
+                <div>{{ form.category }}</div>
+            </div>
+            <hr>
+            <div class="form-group" style="color: darkblue;">
+                <strong>{{ form.location.label_tag }}</strong>
+                <div>{{ form.location }}</div>
+            </div>
+            <hr>
+            <div class="form-group" style="color: darkblue;">
+                <strong>{{ form.status.label_tag }}</strong>
+                <div>{{ form.status }}</div>
+            </div>
+            <hr>            
+            <button type="submit" class="btn btn-primary">Post Job</button>
+        </form>
+    </div>
+    <hr>
+    <div class="my-3 mx-5" style="align-items: center;">
+        <a href="{% url 'index' %}">Back to Portal</a>
+    </div>
+{% endblock %}

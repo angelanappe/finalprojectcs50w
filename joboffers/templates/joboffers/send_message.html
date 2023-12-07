@@ -1,0 +1,26 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+<div class="my-3 mx-5" style="align-items: center;">
+    <h2>Send Message</h2>
+    <label for="message_text">Message:</label>
+    <form method="post" action="{% url 'send_message' receiver_id %}">
+        {% csrf_token %}
+        <textarea id="messageContent" name="content" cols="80" rows="4" required></textarea>
+        <input onclick="return validateMessage()" type="submit" value="Send Message">
+    </form>
+
+</div>
+
+<script>
+    // function for avoid an empty message to de sent
+    function validateMessage() {
+        var content = document.getElementById("messageContent").value;
+        if (content.trim() === "") {
+            alert("Please enter a message before sending.");
+            return false; // Prevent form submission
+        }
+        return true; 
+    }
+</script>
+{% endblock %}

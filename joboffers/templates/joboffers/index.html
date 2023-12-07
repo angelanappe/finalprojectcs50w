@@ -1,0 +1,44 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+<style>
+    .custom-divider {
+        border-top: 2px dotted #ccc; /* Change color as needed */
+        margin: 1.5rem 0;
+    }
+</style>
+
+<div class="welcome-container text-center">
+    {% if user.is_authenticated %}
+        <div class="authenticated-welcome">
+            <h1 style="color: darkblue;">Welcome, {{ user.username }}</h1>
+            <div style="border-top: 2px dotted #ccc"></div><br>
+            <p class="text_index" style="font-size: larger;">What do you need?</p>
+            <form action="{% url 'index' %}" method="post" class="welcome-form">
+                {% csrf_token %}
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="search" name="choice" value="search" class="form-check-input">
+                    <label for="search" class="form-check-label" style="font-size: larger;">I'm looking for a job</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="offer" name="choice" value="offer" class="form-check-input">
+                    <label for="offer" class="form-check-label" style="font-size: larger;">I want to offer a job</label>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-secondary">Submit</button>
+                </div>
+            </form>
+        </div>
+    {% else %}
+        <div class="guest-welcome">
+            <h4 style="color: darkblue;">Welcome to CS50W's Job Portal</h4>
+            <div class="custom-divider"></div>
+            <p style="font-size: larger;">Don't have an account? <a href="{% url 'register' %}" class="register-link">Register here.</a></p>
+            <div class="custom-divider"></div>
+            <p style="font-size: larger;">If you're already part of CS50's Job Portal, search for a job with us by <a href="{% url 'login' %}" class="login-link">logging in</a>!</p>
+            <div class="custom-divider"></div>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

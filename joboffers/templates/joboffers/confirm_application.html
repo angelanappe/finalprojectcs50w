@@ -1,0 +1,23 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+
+<div class="my-3 mx-5" style="align-items: center;">
+    <!-- Step 3: Display Success Message -->
+    <h2>Your application was done successfully!</h2>
+    <div style="border-top: 2px dotted #ccc"></div><br>
+    <p>You have applied for the job: <strong>{{ job.title }}</strong></p>
+
+    <!-- Display Application Information -->
+    <p>Application Details:</p>
+    <p><strong>User:</strong> {{ application.user.username }}</p>
+    <p><strong>Application Date:</strong> {{ application.date }}</p>
+    <hr>
+    <p><i>Start checking your inbox in the next few hours to start a conversation with a representative of {{ job.company_name }}.</i></p>
+    <br>
+    <a href="{% url 'profile' %}"><h6>Back to My Profile</h6></a>
+    <br>
+    <a href="{% url 'index' %}"><h6>Back to Portal</h6></a>
+</div>
+
+{% endblock %}

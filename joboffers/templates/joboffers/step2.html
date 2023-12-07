@@ -1,0 +1,19 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+
+<div class="my-3 mx-5" style="align-items: center;">
+    <h2>Confirm Application</h2>
+    <div style="border-top: 2px dotted #ccc"></div><br>
+    <p><strong>Job:</strong> {{ job.title }}</p>
+    <P><strong>Company:</strong> {{ job.company_name }}</P>
+    <p><strong>User:</strong> {{ user_profile.user.username }}</p>
+    <!-- Add other user information as needed -->
+
+    <form action="{% url 'confirm_application' job.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm Application</button>
+    </form>
+</div>
+
+{% endblock %}

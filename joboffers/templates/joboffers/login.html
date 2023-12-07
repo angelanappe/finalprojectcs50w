@@ -1,0 +1,61 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+<div class="my-3 mx-5" style="align-items: center;">
+
+    <h2>Log In</h2>
+
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="password" placeholder="Password">
+        </div>
+        <input class="btn btn-primary" type="submit" value="Login">
+        <div id="error-message" class="text-danger"></div>
+    </form>
+    <hr>
+
+    Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+
+</div>
+<script>
+$(document).ready(function () {
+    // Handle form submission
+    $('form').submit(function (e) {
+        e.preventDefault(); // Prevent the form from submitting normally
+
+        // Get form data
+        var formData = {
+            'username': $('input[name=username]').val(),
+            'password': $('input[name=password]').val(),
+            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+        };
+
+        // Submit the form via AJAX
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            dataType: 'json',  // Specify that the response will be JSON
+            success: function (data) {
+                // Check the response for success or error
+                if (data.success) {
+                    // Redirect or perform other actions on successful login
+                    window.location.replace(data.redirect);
+                } else {
+                    // Display error message
+                    $('#error-message').text('Wrong username or password. Please try again.');
+                }
+            },
+            error: function () {
+                // Handle AJAX error
+                $('#error-message').text('An error occurred. Please try again.');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

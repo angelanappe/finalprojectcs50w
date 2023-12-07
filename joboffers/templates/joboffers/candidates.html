@@ -1,0 +1,50 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+    <div class="my-3 mx-5" style="align-items: center;">
+        <h3>Applicants for <u>{{ job.title }}</u></h3>
+        <div style="border-top: 2px dotted #ccc"></div><br>
+        <ul>
+            <br>
+            {% if applications %}
+                {% for application in applications %}
+                    <li>
+                        <p><strong>Candidate:</strong> {{ application.user.username }}</p>
+                        <p><strong>Application date:</strong> {{ application.date }}</p>
+                        <p><strong>{{ application.user.username }}'s resume:</strong> <a href="{{ application.user_profile.resume.url }}" target="_blank">View Resume</a></p>
+                        <p><strong>Profession:</strong> {{ application.user_profile.title }}</p>
+                        <p><strong>Abilities:</strong> {{ application.user_profile.habilities }}</p>
+                        <p><strong>Experience:</strong> {{ application.user_profile.experience }}</p>
+                        <p><strong>Years of experience:</strong> {{ application.user_profile.years }}</p>
+                    
+                        <form action="{% url 'send_message' receiver_id=application.user.id %}" method="post">
+                            {% csrf_token %}
+                            <textarea id="messageContent_{{ application.user.id }}" name="content" placeholder="Enter your message" cols="80" rows="4"></textarea><br>
+                            <button type="submit" class="btn btn-secondary" onclick="return validateMessage('{{ application.user.id }}')">Send a message</button>
+                        </form>
+                        <hr>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li><h5>No candidates yet.</h5></li>
+                <hr>
+            {% endif %}
+        </ul>
+        <a href="{% url 'index' %}">Back to Portal</a>
+        <br>
+        <a href="{% url 'profile' %}">Back to My Profile</a>
+    </div>
+
+    <script>
+        // function for avoid an empty message to the candidate
+        function validateMessage(userId) {
+            var content = document.getElementById("messageContent_" + userId).value;
+            if (content.trim() === "") {
+                alert("Please enter a message before sending.");
+                return false; // Prevent form submission
+            }
+            return true;
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+    
+    <div class="my-3 mx-5" style="align-items: center;">
+        <h2>{{ job.title }}</h2>
+        <div style="border-top: 2px dotted #ccc"></div><br>
+        <p><strong>Company:</strong> {{ job.company_name }}</p>
+        <p><strong>Company information:</strong> {{ job.company_data }}</p>
+        <p><strong>Description:</strong> {{ job.job_description }}</p>
+        <p><strong>Location:</strong> {{ job.location }}</p>
+        {% if job.created_by != request.user %} 
+            {% if not applied_jobs %}
+                <form action="{% url 'step1' job.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </form>
+            {% endif %}
+            <br>
+            <button id="save-job-btn-{{ job.id }}" data-job-id="{{ job.id }}" class="btn btn-light">
+                {% if request.user in job.saved_by.all %}
+                    <i class="fas fa-bookmark"></i> Unsave
+                {% else %}
+                    <i class="far fa-bookmark"></i> Save
+                {% endif %}
+            </button>
+        {% endif %}
+    </div>
+    <hr>
+    <a class="my-3 mx-5" href="{% url 'search_jobs' %}">Back to Job Offers</a>
+    <hr>
+    <a class="my-3 mx-5" href="{% url 'index' %}">Back to Portal</a>
+
+<script>
+$(document).ready(function () {
+    // Change from '#save-job-btn' to '[id^=save-job-btn-]'
+    $('[id^=save-job-btn-]').on('click', function () {
+        console.log("Button clicked!");
+
+        var button = $(this); // Capture the button element
+
+        var jobId = button.data('job-id');
+        var url = "{% url 'save_job' %}";
+
+        // Get the CSRF token from the cookie
+        var csrftoken = document.cookie.match(/csrftoken=([\w-]+)/)[1];
+
+        // Make an AJAX request to the server with the CSRF token
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: { 'job_id': jobId },
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (data) {
+                // Update the button text and icon based on the server response
+                if (data.saved) {
+                    button.html('<i class="fas fa-bookmark"></i> Unsave');
+                } else {
+                    button.html('<i class="far fa-bookmark"></i> Save');
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

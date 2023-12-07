@@ -1,0 +1,99 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+    <div class="my-3 mx-5" style="align-items: center;">
+        {% if user.is_authenticated %}
+            <h1>Available Jobs</h1>
+            <div style="border-top: 2px dotted #ccc"></div><br>
+            {% if jobs %}
+                <ul>
+                {% for job in jobs %}
+                    <div>
+                        <li>
+                            {% if job in applied_jobs %}
+                                <p>You have already applied for this job.</p>
+                            {% else %}
+                                <h4><a href="{% url 'job_detail' job.id %}">{{ job.title }}</a></h4>
+                                <p>{{ job.job_description }}</p>
+                                <p><strong>Company:</strong> {{ job.company_name }}</p>
+                                <p><strong>Location:</strong> {{ job.location }}</p>
+                                {% if job.created_by != request.user %} 
+                                    <form action="{% url 'step1' job.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary">Apply</button>
+                                    </form>
+                                    <br>
+                                    <button id="save-job-btn-{{ job.id }}" data-job-id="{{ job.id }}" class="btn btn-light">
+                                        {% if request.user in job.saved_by.all %}
+                                            <i class="fas fa-bookmark"></i> Unsave
+                                        {% else %}
+                                            <i class="far fa-bookmark"></i> Save
+                                        {% endif %}
+                                    </button>
+                                {% endif %}
+                                {% if job.created_by == request.user %}
+                                    <p><i>Job posted by you</i></p>
+                                {% endif %}
+                            {% endif %}
+                        </li>
+                        <hr>
+                    </div>
+                {% endfor %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination d-flex justify-content-center">
+                            {% if jobs.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ jobs.previous_page_number }}">&laquo;previous</a></li>
+                            {% endif %}
+                            {% if jobs.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ jobs.next_page_number }}">next&raquo;</a></li>
+                            {% endif %}
+                        </span>
+                    </nav>
+                </div>
+                </ul>
+            {% else %}
+                <p>No jobs available at the moment.</p>
+                <hr>
+            {% endif %}
+        {% endif %}
+        <a class="my-3 mx-5" href="{% url 'index' %}">Back to Portal</a>
+    </div>
+    <br>
+
+<script>
+$(document).ready(function () {
+    // Change from '#save-job-btn' to '[id^=save-job-btn-]'
+    $('[id^=save-job-btn-]').on('click', function () {
+        console.log("Button clicked!");
+
+        var button = $(this); // Capture the button element
+
+        var jobId = button.data('job-id');
+        var url = "{% url 'save_job' %}";
+
+        // Get the CSRF token from the cookie
+        var csrftoken = document.cookie.match(/csrftoken=([\w-]+)/)[1];
+
+        // Make an AJAX request to the server with the CSRF token
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: { 'job_id': jobId },
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (data) {
+                // Update the button text and icon based on the server response
+                if (data.saved) {
+                    button.html('<i class="fas fa-bookmark"></i> Unsave');
+                } else {
+                    button.html('<i class="far fa-bookmark"></i> Save');
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+});
+</script>
+    
+{% endblock %}

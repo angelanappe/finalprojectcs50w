@@ -1,0 +1,66 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+<div class="my-3 mx-5" style="align-items: center;">
+    <h1>Messages</h1>
+    <div style="border-top: 2px dotted #ccc"></div><br>
+    {% if messages %}
+        {% for message in messages %}
+            {% if not message.is_deleted %}
+                <p>
+                    {% if request.user == message.sender %}
+                        {{ message.content }} <br> 
+                        <ul>To <strong>{{ message.receiver.username }}</strong> - {{ message.timestamp }}
+                            {% if request.user == message.sender %}
+                                <a href="{% url 'delete_message' message.id %}" class="delete-job-link" onclick="return confirmDeleteSMS()">Delete message</a>
+                            {% endif %}
+                        </ul>
+                    {% else %}
+                        {{ message.content }} <br> 
+                        <ul>From <strong>{{ message.sender.username }}</strong> - {{ message.timestamp }}
+                            <button class="btn btn-link" onclick="toggleAnswerForm({{ message.id }})">Answer</button>
+                            <div id="answerForm{{ message.id }}" style="display: none;">
+                                <form action="{% url 'send_message' receiver_id=message.sender.id %}" method="post">
+                                    {% csrf_token %}
+                                    <textarea id="messageContent" name="content" placeholder="Enter your message" cols="50" rows="3"></textarea><br>
+                                    <button type="submit"  onclick="return validateMessage()" class="btn btn-secondary">Send a message</button>
+                                </form>
+                            </div>
+                        </ul>
+                    {% endif %}
+                    <hr>
+                </p>
+                
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p>No conversations yet.</p>
+    {% endif %}
+</div>
+<script>
+    //delete sent message
+    function confirmDeleteSMS() {
+        return confirm("After deleting this conversation you won't be able to go back. Are you sure you want to continue?");
+    }
+
+    //answer the received message
+    function toggleAnswerForm(messageId) {
+        var answerForm = document.getElementById('answerForm' + messageId);
+        if (answerForm.style.display === 'none') {
+            answerForm.style.display = 'block';
+        } else {
+            answerForm.style.display = 'none';
+        }
+    }
+
+     //function to avoid an empty message to be sent
+     function validateMessage() {
+        var content = document.getElementById("messageContent").value;
+        if (content.trim() === "") {
+            alert("Please enter a message before sending.");
+            return false; 
+        }
+        return true; 
+    }
+</script>
+{% endblock %}

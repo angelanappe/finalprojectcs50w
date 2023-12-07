@@ -1,0 +1,39 @@
+/* inbox mark if unread messages*/
+.notification-mark {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    margin-left: 5px;
+}
+
+.notification-mark::before {
+    content: "●"; /* Use any suitable symbol for your notification mark */
+    color: red; /* Customize the color as needed */
+    margin-right: 5px; /* Adjust the spacing */
+}
+
+
+body {
+    background-color: #fff; 
+    color: #000; /* black text */
+    font-family: 'Arial', sans-serif; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: darkblue; /* blue headings */
+}
+
+.text_index {
+    color:#000;
+    font-size: large;
+}
+
+footer img {
+    width: 100%;
+}
+
+footer {
+    max-width: none;
+}
+

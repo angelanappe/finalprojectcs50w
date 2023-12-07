@@ -1,0 +1,105 @@
+{% extends "joboffers/layout.html" %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+    <div class="my-3 mx-5" style="align-items: center;">
+        {% if user_profile %}
+        <h1>{{ user_profile.user.username }}</h1>
+        <div style="border-top: 2px dotted #ccc"></div><br>
+        <a href="{% url 'edit_profile' %}">Edit</a>
+        <hr>        
+            <p><strong>Profession:</strong> {{ user_profile.title }}</p>
+            <p><strong>Experience:</strong> {{ user_profile.experience }}</p>
+            <p><strong>Years of Experience:</strong> {{ user_profile.years }}</p>
+            <p><strong>Abilities:</strong> {{ user_profile.habilities }}</p>
+            <p><strong>Resume:</strong>
+                {% if user_profile.resume %}
+                    <a href="{{ user_profile.resume.url }}" target="_blank">{{ user_profile.resume.name }}</a></p> 
+                {% else %}
+                    <a href="{% url 'edit_profile' %}">Add resume</a>
+                    <p><i>Only .pdf is accepted.</i></p>
+                {% endif %}
+            <hr>
+            
+            <h5>Your Applications</h5>
+            <br>
+            {% if applications %}
+                <ul>
+                    {% for application in applications %}
+                        <li>
+                            <p>Applied to: <a href="{% url 'job_detail' application.job.id %}">{{ application.job.title }}</a></p>
+                            <p>Date: {{ application.date }} <a href="{% url 'remove_application' application.id %}" class="remove-apply-link" onclick="return confirmRemove()">Remove</a></p>
+                        </li>
+                        <br>
+                    {% endfor %}
+                </ul>
+                <hr>
+            {% else %}
+                <p>No applications yet. <a href="{% url 'search_jobs' %}">Go search for a job!</a></p>
+                <hr>
+            {% endif %}
+
+            {% if owner_job %}
+                <h2>Jobs Posted by You</h2>
+                <br>
+                <ul>
+                    {% for job in owner_job %}
+                        <li>
+                            <a href="{% url 'job_detail' job.id %}">{{ job.title }}</a> || <a href="{% url 'candidates' job.id %}">Applicants</a> ||
+                            <a href="{% url 'delete_job' job.id %}" class="delete-job-link" onclick="return confirmDelete()">Delete Posted Job</a>
+                            <br>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <br>
+            {% endif %}
+        {% else %}
+            <h1>Create your profile</h1>
+            <div style="border-top: 2px dotted #ccc"></div><br> 
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <strong>Name:</strong> {{user.username }}
+                </div>
+                <div class="form-group">
+                    <strong>{{ form.title.label_tag }}</strong>
+                    {{ form.title }}
+                </div>
+                <div class="form-group">
+                    <strong>{{ form.years.label_tag }} (of experience)</strong>
+                    {{ form.years }}
+                </div>
+                <div class="form-group">
+                    <strong>{{ form.experience.label_tag }}</strong>
+                </div>
+                    <textarea name="{{ form.experience.name }}" cols="100" rows="3">{{ form.experience.value }}</textarea>
+                
+                <div class="form-group">
+                    <strong>{{ form.habilities.label_tag }}</strong>
+                </div>
+                    <textarea name="{{ form.habilities.name }}" cols="100" rows="3">{{ form.habilities.value }}</textarea>
+                
+                <div class="form-group">
+                    <strong>{{ form.resume.label_tag }}</strong>
+                    {{ form.resume }}
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        {% endif %}
+        <hr>
+        <a href="{% url 'index' %}">Back to Portal</a>
+    </div>
+{% endif %}
+
+<script>
+    function confirmDelete() {
+        return confirm("Deleting this job will delete all information associated with it. Are you sure you want to continue?");
+    }
+
+    function confirmRemove() {
+        return confirm("You are deleting your application. Once removed you will not be able to go back. Are you sure you want to continue?");
+    }
+</script>
+
+{% endblock %}
